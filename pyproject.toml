@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "crowleer"
+version = "0.1.0"
+description = ""
+authors = ["Irina Safenkova <saf-iri@yandex.ru>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+httpx = "^0.23.0"
+beautifulsoup4 = "^4.11.1"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
