@@ -1,5 +1,5 @@
 from crowleer.page import PageLoader, PageCrowleer
-from crowleer.api.jobs import client_job
+from crowleer.api.client import client
 
 
 def main():
@@ -9,7 +9,8 @@ def main():
     # loader.to_html(content, "jobs_page.html")
     content = loader.read_file("jobs_page.html")
     jobs = crowleer.parse(content)
-    transfer_jobs = [client_job.add(job) for job in jobs]
+    for job in jobs:
+        client.jobs.add(job)
 
 
 if __name__ == '__main__':

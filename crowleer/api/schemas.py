@@ -3,7 +3,7 @@ from datetime import date
 from pydantic import BaseModel, Field
 
 
-class JobModel(BaseModel):
+class Job(BaseModel):
     uid: int = Field(ge=1)
     name: str = Field(min_length=2)
     salary: int
@@ -12,17 +12,11 @@ class JobModel(BaseModel):
     date_expiring: date
     url: str
 
-    class Config:
-        orm_mode = True
 
-
-class CompanyModel(BaseModel):
+class Company(BaseModel):
 
     uid: int = Field(ge=1)
     name: str = Field(min_length=2)
     region: str = Field(min_length=2)
     category: str = Field(min_length=2)
     description: str
-
-    class Config:
-        orm_mode = True

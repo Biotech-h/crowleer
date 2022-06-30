@@ -1,20 +1,19 @@
 import orjson
-from flask import request
+import requests
 
-from crowleer.api.schemas import JobModel
+from crowleer.config import config
+from crowleer.api.schemas import Job
 
 
 class JobApi:
 
-    def add(self, job: JobModel) -> JobModel:
+    def add(self, job: Job) -> Job:
         json_job = orjson.dumps(job.dict())
         headers = {
             'Content-Type': 'application/json',
         }
-        respose = request.post('/api/v1/company/jobs', content=json_job, headers=headers)
+        respose = requests.post(f'{config.app_host}:{config.app_port}/api/v1/company/jobs', content=json_job, headers=headers)
         respose.raise_for_status()
 
         payload = respose.json()
-        return JobModel(**payload)
-
-client_job = JobApi()
+        return Job(**payload)

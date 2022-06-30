@@ -1,20 +1,19 @@
 import orjson
-from flask import request
+import requests
 
-from crowleer.api.schemas import CompanyModel
+from crowleer.config import config
+from crowleer.api.schemas import Company
 
 
 class CompanyApi:
 
-    def add(self, company: CompanyModel) -> CompanyModel:
+    def add(self, company: Company) -> Company:
         json_company = orjson.dumps(company.dict())
         headers = {
             'Content-Type': 'application/json',
         }
-        respose = request.post('/api/v1/jobs/', content=json_company, headers=headers)
+        respose = requests.post(f'{config.app_host}:{config.app_port}/api/v1/company/', content=json_company, headers=headers)
         respose.raise_for_status()
 
         payload = respose.json()
-        return CompanyModel(**payload)
-
-client_company = CompanyApi()
+        return Company(**payload)
