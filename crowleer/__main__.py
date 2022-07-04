@@ -10,7 +10,8 @@ def main():
     content = loader.read_file("jobs_page.html")
     jobs = crowleer.parse(content)
     for job in jobs:
-        client.jobs.add(job)
+        job_unique = client.jobs.check_by_url(job, job['href'])
+        client.jobs.add(job_unique)
 
 
 if __name__ == '__main__':
