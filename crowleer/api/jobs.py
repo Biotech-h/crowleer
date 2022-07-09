@@ -1,10 +1,11 @@
-import orjson
 import httpx
+import orjson
 
 from crowleer.api.schemas import Job
 
 
 class JobApi:
+
     def __init__(self, url: str) -> None:
         self.url = url
 
@@ -13,15 +14,27 @@ class JobApi:
         headers = {
             'Content-Type': 'application/json',
         }
-        respose = httpx.post(f'{self.url}/api/v1/company/jobs', content=json_job, headers=headers)
+        respose = httpx.post(
+            url=f'{self.url}/api/v1/jobs/',
+            content=json_job,
+            headers=headers,
+        )
         respose.raise_for_status()
 
         payload = respose.json()
         return Job(**payload)
 
-    def check_by_url(self, job: Job, url: Job.url) -> Job:
-        response = httpx.get(f'{self.url}/api/v1/company/jobs')
+    def get_by_url(self, company_id: int, url: str) -> Job | None:
+        response = httpx.get(f'{self.url}/api/v1/companies/{company_id}/jobs/', params={
+            'url': url,
+        })
+
+        if response.status_code == httpx.codes.NOT_FOUND:
+            return None
+
         response.raise_for_status()
-        for job_in_base in response.json():
-            if url != job_in_base['url']:
-                return job
+
+        jobs = response.json()
+        job = jobs[0]
+
+        return Job(**job)
