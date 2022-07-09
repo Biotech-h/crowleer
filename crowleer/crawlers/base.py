@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from crowleer.api.schemas import Job
 
 
-class PageCrowleer(ABC):
+class Crowleer(ABC):
     company_id: int
 
     @abstractmethod

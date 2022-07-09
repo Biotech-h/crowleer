@@ -13,7 +13,7 @@ config = Config(
     url=os.environ['BACKEND_URL'],
     loglevel=os.getenv('LOGLEVEL', 'INFO'),
     companies={
-        'wur': os.environ['WUR_COMPANY_ID'],
-        'moderna': os.environ['MODERNA_COMPANY_ID'],
-    }
+        'wur': int(os.environ['WUR_COMPANY_ID']),
+        'moderna': int(os.environ['MODERNA_COMPANY_ID']),
+    },
 )

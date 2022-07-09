@@ -1,11 +1,11 @@
 from bs4 import BeautifulSoup
 
-from crowleer.api.schemas import Job, MAX_DESCRIPTION_LENGTH
-from crowleer.crawlers.base import PageCrowleer
+from crowleer.api.schemas import MAX_DESCRIPTION_LENGTH, Job
+from crowleer.crawlers.base import Crowleer
 from crowleer.loader import PageLoader
 
 
-class WurCrowleer(PageCrowleer):
+class WurCrowleer(Crowleer):
     url = 'https://www.wur.nl'
 
     def __init__(self, company_id: int) -> None:
@@ -33,9 +33,11 @@ class WurCrowleer(PageCrowleer):
         soup = BeautifulSoup(content, features='html.parser')
         description_header = soup.find('h2', id='We_are_looking_for-anchor')
         description = description_header.find_next_sibling('p').get_text()
+
         return Job(
             uid=-1,
             name=soup.find('h1', id='content').get_text(),
+            company_uid=self.company_id,
             url=f'{self.url}{link}',
             description=description[:MAX_DESCRIPTION_LENGTH],
         )

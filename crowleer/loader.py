@@ -1,4 +1,5 @@
 import time
+from typing import Any
 
 import httpx
 
@@ -13,6 +14,12 @@ class PageLoader:
         resp = httpx.get(url)
         resp.raise_for_status()
         return resp.content
+
+    def load_json(self, url: str) -> dict[str, Any]:
+        time.sleep(self.timeout)
+        resp = httpx.get(url, headers={'accept': 'application/json'})
+        resp.raise_for_status()
+        return resp.json()
 
     def to_html(self, content: bytes, filename: str) -> None:
         with open(filename, 'wb') as fs:
