@@ -14,7 +14,11 @@ class JobApi:
         headers = {
             'Content-Type': 'application/json',
         }
-        respose = httpx.post(f'{self.url}/api/v1/companies/jobs', content=json_job, headers=headers)
+        respose = httpx.post(
+            url=f'{self.url}/api/v1/jobs/',
+            content=json_job,
+            headers=headers,
+        )
         respose.raise_for_status()
 
         payload = respose.json()
@@ -30,5 +34,7 @@ class JobApi:
 
         response.raise_for_status()
 
-        job = response.json()
+        jobs = response.json()
+        job = jobs[0]
+
         return Job(**job)
