@@ -38,3 +38,13 @@ class JobApi:
         job = jobs[0]
 
         return Job(**job)
+
+    def get_all(self) -> list[Job]:
+        response = httpx.get(f'{self.url}/api/v1/jobs/')
+        response.raise_for_status()
+
+        return [Job(**job) for job in response.json()]
+
+    def delete_job(self, uid) -> None:
+        response = httpx.delete(f'{self.url}/api/v1/jobs/{uid}')
+        response.raise_for_status()

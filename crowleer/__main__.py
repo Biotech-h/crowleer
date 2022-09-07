@@ -1,6 +1,8 @@
 import logging
 import time
 
+import httpx
+
 from crowleer.api.client import client
 from crowleer.api.schemas import Job
 from crowleer.config import config
@@ -28,6 +30,10 @@ def main():
 
         time.sleep(HOUR)
 
+        check_jobs()
+
+        time.sleep(HOUR)
+
 
 def add_jobs(company_id: int, jobs: list[Job]) -> None:
     for job in jobs:
@@ -37,6 +43,16 @@ def add_jobs(company_id: int, jobs: list[Job]) -> None:
             continue
 
         client.jobs.add(job)
+
+
+def check_jobs():
+    jobs = client.jobs.get_all()
+    for job in jobs:
+        logger.debug(job)
+        response = httpx.get(job.url)
+
+        if response.status_code != 200:
+            client.jobs.delete_job(job.uid)
 
 
 if __name__ == '__main__':
