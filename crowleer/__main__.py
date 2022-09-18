@@ -1,5 +1,6 @@
 import logging
 import time
+from datetime import date, timedelta
 
 import httpx
 
@@ -18,6 +19,7 @@ crawlers: list[Crowleer] = [
 ]
 
 HOUR = 3600
+DAY = 86400
 
 
 def main():
@@ -27,10 +29,6 @@ def main():
         for crawler in crawlers:
             jobs = crawler.parse()
             add_jobs(crawler.company_id, jobs)
-
-        time.sleep(HOUR)
-
-        check_jobs()
 
         time.sleep(HOUR)
 
@@ -46,14 +44,22 @@ def add_jobs(company_id: int, jobs: list[Job]) -> None:
 
 
 def check_jobs():
-    jobs = client.jobs.get_all()
-    for job in jobs:
-        logger.debug(job)
-        response = httpx.get(job.url)
+    logging.basicConfig(level=config.loglevel)
 
-        if response.status_code != 200:
+    while True:  # noqa: WPS457
+        jobs = client.jobs.get_all()
+        for job in jobs:
+            logger.debug(job)
+            today = date.today()
+            delta = timedelta(days=21)
+            if job.date_added:
+                if job.date_added < today - delta:
+                    client.jobs.delete_job(job.uid)
             client.jobs.delete_job(job.uid)
+
+        time.sleep(DAY)
 
 
 if __name__ == '__main__':
     main()
+    check_jobs()
