@@ -1,5 +1,6 @@
 import logging
 import time
+from datetime import date, timedelta
 
 from crowleer.api.client import client
 from crowleer.api.schemas import Job
@@ -16,6 +17,7 @@ crawlers: list[Crowleer] = [
 ]
 
 HOUR = 3600
+DAY = 86400
 
 
 def main():
@@ -39,5 +41,23 @@ def add_jobs(company_id: int, jobs: list[Job]) -> None:
         client.jobs.add(job)
 
 
+def check_jobs():
+    logging.basicConfig(level=config.loglevel)
+
+    while True:  # noqa: WPS457
+        jobs = client.jobs.get_all()
+        for job in jobs:
+            logger.debug(job)
+            today = date.today()
+            delta = timedelta(days=10)
+            if job.date_added:
+                if job.date_added < today - delta:
+                    client.jobs.delete_job(job.uid)
+            client.jobs.delete_job(job.uid)
+
+        time.sleep(DAY)
+
+
 if __name__ == '__main__':
     main()
+    check_jobs()

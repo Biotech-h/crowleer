@@ -16,3 +16,4 @@ class Job(BaseModel):
     description: Optional[str] = Field(max_length=MAX_DESCRIPTION_LENGTH)
     date_published: Optional[date]
     date_expiring: Optional[date]
+    date_added: Optional[date]
