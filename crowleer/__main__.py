@@ -2,8 +2,6 @@ import logging
 import time
 from datetime import date, timedelta
 
-import httpx
-
 from crowleer.api.client import client
 from crowleer.api.schemas import Job
 from crowleer.config import config
@@ -51,7 +49,7 @@ def check_jobs():
         for job in jobs:
             logger.debug(job)
             today = date.today()
-            delta = timedelta(days=21)
+            delta = timedelta(days=10)
             if job.date_added:
                 if job.date_added < today - delta:
                     client.jobs.delete_job(job.uid)
